@@ -59,4 +59,14 @@ const totalLikes = (blogs) => {
 	}, 0);
 };
 
-module.exports = { dummy, totalLikes };
+const favoriteBlog = (blogs) => {
+	let blogWithMostLikes = { likes: 0 };
+	blogs.forEach((blog) => {
+		if (blog.likes > blogWithMostLikes.likes) {
+			blogWithMostLikes = blog;
+		}
+	});
+	return blogWithMostLikes;
+};
+
+module.exports = { dummy, totalLikes, favoriteBlog };
