@@ -4,8 +4,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "clear $$ NODE_ENV=production node index.js",
-		"dev": "clear $$ NODE_ENV=development nodemon index.js",
+		"start": "NODE_ENV=production node index.js",
+		"dev": "NODE_ENV=development nodemon index.js",
 		"test": "clear && NODE_ENV=test jest --verbose --runInBand --detectOpenHandles"
 	},
 	"repository": {
