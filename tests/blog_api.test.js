@@ -28,20 +28,6 @@ test('get all blogs', async () => {
 
 test('the unique identifier property of the blog posts is named id?', async () => {
 	const response = await api.get('/api/blogs');
-
-	//logging response.body
-	console.log(
-		'######',
-		'VARIABLE NAME:',
-		'response.body',
-		'TYPEOF:',
-		typeof response.body,
-		'VALUE:',
-		response.body,
-		'######'
-	);
-	//end of logging
-
 	response.body.forEach((blog) => {
 		expect(blog.id).toBeDefined();
 	});
@@ -68,6 +54,32 @@ test('post a new blog entry works', async () => {
 	const titles = blogsAtEnd.map((blog) => blog.title);
 
 	expect(titles).toContain('Test Blog');
+});
+
+test('if likes property is missing it will default to 0', async () => {
+	const newBlogWithoutLikes = {
+		title: 'blog without likes',
+		author: 'Michael Chan',
+		url: 'https://reactpatterns.com/',
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newBlogWithoutLikes)
+		.expect(200)
+		.expect('Content-Type', /application\/json/);
+
+	const blogsAtEnd = await helper.blogsInDb();
+
+	const blogToTest = blogsAtEnd.filter((blog) => {
+		return blog.title === 'blog without likes';
+	});
+
+	//logging blogToTest
+	console.log('######', 'VARIABLE NAME:', 'blogToTest', 'TYPEOF:', typeof blogToTest, 'VALUE:', blogToTest, '######');
+	//end of logging
+
+	expect(blogToTest[0].likes).toBe(0);
 });
 
 afterAll(() => {
