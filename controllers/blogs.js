@@ -12,9 +12,13 @@ blogsRouter.post('/', (request, response) => {
 
 	blog.likes = blog.likes || 0;
 
-	blog.save().then((result) => {
-		response.status(200).json(result);
-	});
+	if (blog.title === undefined && blog.url === undefined) {
+		response.status(400).end();
+	} else {
+		blog.save().then((result) => {
+			response.status(200).json(result);
+		});
+	}
 });
 
 module.exports = blogsRouter;

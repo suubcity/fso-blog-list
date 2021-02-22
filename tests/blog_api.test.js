@@ -75,11 +75,13 @@ test('if likes property is missing it will default to 0', async () => {
 		return blog.title === 'blog without likes';
 	});
 
-	//logging blogToTest
-	console.log('######', 'VARIABLE NAME:', 'blogToTest', 'TYPEOF:', typeof blogToTest, 'VALUE:', blogToTest, '######');
-	//end of logging
-
 	expect(blogToTest[0].likes).toBe(0);
+});
+
+test(' if the title and url properties are missing from the request data, the response is status code 400 Bad Request.', async () => {
+	const newBlogMissingData = { author: 'Michael Chan', likes: 300 };
+
+	await api.post('/api/blogs').send(newBlogMissingData).expect(400);
 });
 
 afterAll(() => {
