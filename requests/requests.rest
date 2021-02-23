@@ -8,3 +8,12 @@ Content-Type: application/json
     "url": "www.mrtwitch.com",
     "likes": 999
 }
+
+### Update a blog
+
+PUT http://localhost:3001/api/blogs/600c9559a22ae0678b15d0ba
+Content-Type: application/json
+
+{
+    "likes": 10
+}
