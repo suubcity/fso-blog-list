@@ -3,6 +3,7 @@ const Blog = require('../models/blog');
 require('express-async-errors');
 
 blogsRouter.get('/', async (request, response) => {
+	console.log('getting');
 	const blogs = await Blog.find({});
 	response.json(blogs);
 });
@@ -20,5 +21,15 @@ blogsRouter.post('/', (request, response) => {
 		});
 	}
 });
+
+blogsRouter.delete('/:id', async (request, response) => {
+	await Blog.findByIdAndRemove(request.params.id);
+	response.status(204).end();
+});
+
+// blogsRouter.delete('/:id', async (request, response, next) => {
+// 	await Blog.findByIdAndRemove(request.params.id);
+// 	response.status(204).end();
+// });
 
 module.exports = blogsRouter;

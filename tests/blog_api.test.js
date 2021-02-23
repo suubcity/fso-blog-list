@@ -18,7 +18,7 @@ beforeEach(async () => {
 
 test('get all blogs', async () => {
 	await api
-		.get('/api/blogs')
+		.get('/api/blogs/')
 		.expect(200)
 		.expect('Content-Type', /application\/json/);
 
@@ -82,6 +82,25 @@ test(' if the title and url properties are missing from the request data, the re
 	const newBlogMissingData = { author: 'Michael Chan', likes: 300 };
 
 	await api.post('/api/blogs').send(newBlogMissingData).expect(400);
+});
+
+describe('deletion of note', () => {
+	test('succeeds with valid id', async () => {
+		const blogsAtStart = await helper.blogsInDb();
+		const blogToDelete = blogsAtStart[0];
+
+		await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+		const blogsAtEnd = await helper.blogsInDb();
+
+		expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+
+		const titles = blogsAtEnd.map((blog) => {
+			return blog.title;
+		});
+
+		expect(titles).not.toContain(blogToDelete.title);
+	});
 });
 
 afterAll(() => {
