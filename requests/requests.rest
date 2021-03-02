@@ -17,3 +17,14 @@ Content-Type: application/json
 {
     "likes": 10
 }
+
+
+### POST Create a new user
+POST http://localhost:3001/api/users/
+Content-Type: application/json
+
+{
+    "userName": "eatbeat",
+    "name": "dave",
+    "password": "pass1234"
+}

@@ -16,7 +16,7 @@ blogsRouter.post('/', (request, response) => {
 	if (blog.title === undefined && blog.url === undefined) {
 		response.status(400).end();
 	} else {
-		blog.save().then((result) => {
+		Blog.save().then((result) => {
 			response.status(200).json(result);
 		});
 	}
