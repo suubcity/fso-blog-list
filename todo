@@ -1,0 +1,15 @@
+
+
+in user model
+
+for username  being present and
+ minlength 3
+
+ create tests
+
+ user with less then 3 not created
+error message displayed
+
+ password with les then 3 not created
+ error message displayed
+ 

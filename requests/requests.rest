@@ -9,6 +9,17 @@ Content-Type: application/json
     "likes": 999
 }
 
+### Post new blog without likes
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "No likes!",
+    "author": "Mr Twitch",
+    "url": "www.mrtwitch.com"
+}
+
+
 ### Update a blog
 
 PUT http://localhost:3001/api/blogs/600c9559a22ae0678b15d0ba
@@ -24,7 +35,7 @@ POST http://localhost:3001/api/users/
 Content-Type: application/json
 
 {
-    "userName": "eatbeat",
-    "name": "dave",
+    "username": "Jdog",
+    "name": "Jimmy",
     "password": "pass1234"
 }

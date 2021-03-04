@@ -2,7 +2,7 @@ const supertest = require('supertest');
 require('express-async-errors');
 const app = require('../app.js');
 const Blog = require('../models/blog');
-const helper = require('./test_helper');
+const helper = require('./blog_test_helper');
 const mongoose = require('mongoose');
 
 const api = supertest(app);
@@ -10,8 +10,8 @@ const api = supertest(app);
 beforeEach(async () => {
 	await Blog.deleteMany({});
 
-	const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-	const promiseArray = blogObjects.map((blog) => blog.save());
+	const blogObjects = helper.initialBlogs.map((b) => new Blog(b));
+	const promiseArray = blogObjects.map((b) => b.save());
 	//if you forget await here the tests will run before DB is populated
 	await Promise.all(promiseArray);
 });
@@ -123,6 +123,6 @@ describe('update of blog', () => {
 	});
 });
 
-afterAll(() => {
-	mongoose.connection.close();
+afterAll(async () => {
+	await mongoose.connection.close();
 });
