@@ -35,14 +35,15 @@ describe('when adding a new user', () => {
 			password: 'pass123',
 		};
 
-		await api
+		const result = await api
 			.post('/api/users/')
 			.send(newUser)
 			.expect(422)
 			.expect('Content-Type', /application\/json/);
 
-		const usersAtEnd = helper.usersInDb();
-		expect(usersAtEnd).toHaveLength(helper.initialUsers);
+		expect(result.body.error).toContain('Username must be more than 3 characters.');
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
 	});
 });
 
