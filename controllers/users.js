@@ -16,6 +16,10 @@ usersRouter.post('/', async (req, res) => {
 		res.status(422).json({ error: 'Username must be more than 3 characters.' });
 	}
 
+	if (body.password.length < 3) {
+		res.status(422).json({ error: 'Password must be longer than 3 characters.' });
+	}
+
 	const saltRounds = 10;
 	const passwordHash = await bcrypt.hash(body.password, saltRounds);
 

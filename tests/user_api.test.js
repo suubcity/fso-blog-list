@@ -27,8 +27,7 @@ test('get all users', async () => {
 });
 
 describe('when adding a new user', () => {
-	test('username must be at least 3 characters', async () => {
-		//
+	test('fails when username is less than 3 characters', async () => {
 		const newUser = {
 			username: '12',
 			name: 'Username too short',
@@ -45,6 +44,27 @@ describe('when adding a new user', () => {
 		const usersAtEnd = await helper.usersInDb();
 		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
 	});
+
+	test('fails when password is less than 3 characters', async () => {
+		const newUser = {
+			username: '12345',
+			name: 'Username too short',
+			password: '12',
+		};
+
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(422)
+			.expect('Content-Type', /application\/json/);
+
+		expect(result.body.error).toContain('Password must be longer than 3 characters.');
+		const usersAtEnd = await helper.usersInDb();
+		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
+	});
+
+	//username must be unique status 409
+	//
 });
 
 afterAll(async () => {
