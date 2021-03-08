@@ -7,6 +7,7 @@ const config = require('./utils/config');
 const logger = require('./utils/logger');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const middleware = require('./utils/middleware');
 
 mongoose
 	.connect(config.MONGODB_URI, {
@@ -23,5 +24,7 @@ app.use(morgan('tiny'));
 
 app.use('/api/blogs', blogsRouter);
 app.use('/api/users', usersRouter);
+
+app.use(middleware.errorHandler);
 
 module.exports = app;
