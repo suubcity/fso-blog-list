@@ -5,7 +5,7 @@ const User = require('../models/user');
 
 //Get All
 usersRouter.get('/', async (req, res) => {
-	const users = await User.find({});
+	const users = await User.find({}).populate('blogs');
 	res.json(users);
 });
 
@@ -13,12 +13,13 @@ usersRouter.get('/', async (req, res) => {
 usersRouter.post('/', async (req, res) => {
 	const body = req.body;
 
-	if (!(body.username && body.password)) {
-		return res.status(422).json({ error: 'Username or password missing.' });
+	if (!body.password) {
+		return res.status(422).json({ error: 'Password missing.' });
 	}
-
-	if (body.username.length < 3) {
-		return res.status(422).json({ error: 'Username must be more than 3 characters.' });
+	if (body.username) {
+		if (body.username.length < 3) {
+			return res.status(422).json({ error: 'Username must be more than 3 characters.' });
+		}
 	}
 
 	if (body.password.length < 3) {

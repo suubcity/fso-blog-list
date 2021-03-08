@@ -93,10 +93,8 @@ describe('Adding a new user', () => {
 		const result = await api
 			.post('/api/users/')
 			.send(newUser)
-			.expect(422)
+			.expect(400)
 			.expect('Content-Type', /application\/json/);
-
-		expect(result.body.error).toContain('Username or password missing.');
 
 		const usersAtEnd = await helper.usersInDb();
 		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
@@ -114,7 +112,7 @@ describe('Adding a new user', () => {
 			.expect(422)
 			.expect('Content-Type', /application\/json/);
 
-		expect(result.body.error).toContain('Username or password missing.');
+		expect(result.body.error).toContain('Password missing.');
 
 		const usersAtEnd = await helper.usersInDb();
 		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);

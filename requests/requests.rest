@@ -3,7 +3,7 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Add a new one!",
+    "title": "A BLOG",
     "author": "Mr Twitch",
     "url": "www.mrtwitch.com",
     "likes": 999
@@ -35,8 +35,19 @@ POST http://localhost:3001/api/users/
 Content-Type: application/json
 
 {
-    "username": "Jdog",
-    "name": "Jimmy",
+    "username": "blogUser",
+    "name": "Mr Thomas",
+    "password": "pass1234"
+}
+
+
+### POST Create a new user with missing username
+POST http://localhost:3001/api/users/
+Content-Type: application/json
+
+{
+    
+    "name": "Mr Thomas",
     "password": "pass1234"
 }
 

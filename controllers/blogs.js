@@ -1,21 +1,28 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user');
 require('express-async-errors');
 
 blogsRouter.get('/', async (req, res) => {
 	console.log('getting');
-	const blogs = await Blog.find({});
+	const blogs = await Blog.find({}).populate('user');
 	res.json(blogs);
 });
 
 blogsRouter.post('/', async (req, res) => {
 	const blog = new Blog(req.body);
 
+	const user = await User.findOne({ username: 'blogUser' });
+
+	blog.user = user.id;
+
 	blog.likes = blog.likes || 0;
 
 	if (blog.title === undefined && blog.url === undefined) {
 		res.status(400).end();
 	} else {
+		user.blogs = user.blogs.concat(blog._id);
+		await user.save();
 		const savedBlog = await blog.save();
 		res.json(savedBlog);
 	}
