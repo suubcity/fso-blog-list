@@ -9,10 +9,9 @@ const api = supertest(app);
 
 beforeEach(async () => {
 	await User.deleteMany({});
-	const userObjects = helper.initialUsers.map((u) => new User(u));
-	const promiseArray = userObjects.map((u) => u.save());
-
-	await Promise.all(promiseArray);
+	for (let user of helper.initialUsers) {
+		await api.post('/api/users/').send(user);
+	}
 });
 
 test('get all users', async () => {
@@ -127,7 +126,7 @@ describe('Adding a new user', () => {
 
 		//end of logging
 
-		const result = await api
+		await api
 			.post('/api/users/')
 			.send(newUser)
 			.expect(400)

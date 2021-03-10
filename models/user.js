@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.plugin(uniqueValidator);
 
+//this effects what is sent to the frontend only
 userSchema.set('toJSON', {
 	transform: (doc, ret) => {
 		ret.id = ret._id.toString();

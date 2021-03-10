@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-require('express-async-errors');
 const usersRouter = require('express').Router();
 const User = require('../models/user');
 

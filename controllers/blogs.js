@@ -1,7 +1,6 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
-require('express-async-errors');
 
 blogsRouter.get('/', async (req, res) => {
 	console.log('getting');
@@ -12,7 +11,7 @@ blogsRouter.get('/', async (req, res) => {
 blogsRouter.post('/', async (req, res) => {
 	const blog = new Blog(req.body);
 
-	const user = await User.findOne({ username: 'blogUser' });
+	const user = await User.findOne({ username: 'daveDingo' });
 
 	blog.user = user.id;
 

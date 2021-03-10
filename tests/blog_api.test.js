@@ -2,7 +2,9 @@ const supertest = require('supertest');
 require('express-async-errors');
 const app = require('../app.js');
 const Blog = require('../models/blog');
-const helper = require('./blog_test_helper');
+const User = require('../models/user');
+const blogHelper = require('./blog_test_helper');
+const userHelper = require('./user_test_helper');
 const mongoose = require('mongoose');
 
 const api = supertest(app);
@@ -10,9 +12,15 @@ const api = supertest(app);
 beforeEach(async () => {
 	await Blog.deleteMany({});
 
-	const blogObjects = helper.initialBlogs.map((b) => new Blog(b));
-	const promiseArray = blogObjects.map((b) => b.save());
+	const blogObjects = blogHelper.initialBlogs.map((b) => new Blog(b));
+	let promiseArray = blogObjects.map((b) => b.save());
 	//if you forget await here the tests will run before DB is populated
+	await Promise.all(promiseArray);
+
+	await User.deleteMany({});
+	const userObjects = userHelper.initialUsers.map((u) => new User(u));
+	promiseArray = userObjects.map((u) => u.save());
+
 	await Promise.all(promiseArray);
 });
 
@@ -23,7 +31,7 @@ test('get all blogs', async () => {
 		.expect('Content-Type', /application\/json/);
 
 	const response = await api.get('/api/blogs');
-	expect(response.body).toHaveLength(helper.initialBlogs.length);
+	expect(response.body).toHaveLength(blogHelper.initialBlogs.length);
 });
 
 test('the unique identifier property of the blog posts is named id?', async () => {
@@ -47,9 +55,9 @@ test('post a new blog entry works', async () => {
 		.expect(200)
 		.expect('Content-Type', /application\/json/);
 
-	const blogsAtEnd = await helper.blogsInDb();
+	const blogsAtEnd = await blogHelper.blogsInDb();
 
-	expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+	expect(blogsAtEnd).toHaveLength(blogHelper.initialBlogs.length + 1);
 
 	const titles = blogsAtEnd.map((blog) => blog.title);
 
@@ -69,7 +77,7 @@ test('if likes property is missing it will default to 0', async () => {
 		.expect(200)
 		.expect('Content-Type', /application\/json/);
 
-	const blogsAtEnd = await helper.blogsInDb();
+	const blogsAtEnd = await blogHelper.blogsInDb();
 
 	const blogToTest = blogsAtEnd.filter((blog) => {
 		return blog.title === 'blog without likes';
@@ -86,14 +94,14 @@ test(' if the title and url properties are missing from the request data, the re
 
 describe('deletion of note', () => {
 	test('succeeds with valid id', async () => {
-		const blogsAtStart = await helper.blogsInDb();
+		const blogsAtStart = await blogHelper.blogsInDb();
 		const blogToDelete = blogsAtStart[0];
 
 		await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
-		const blogsAtEnd = await helper.blogsInDb();
+		const blogsAtEnd = await blogHelper.blogsInDb();
 
-		expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+		expect(blogsAtEnd).toHaveLength(blogHelper.initialBlogs.length - 1);
 
 		const titles = blogsAtEnd.map((blog) => {
 			return blog.title;
@@ -105,7 +113,7 @@ describe('deletion of note', () => {
 
 describe('update of blog', () => {
 	test('works when updating likes', async () => {
-		const blogsAtStart = await helper.blogsInDb();
+		const blogsAtStart = await blogHelper.blogsInDb();
 		const blogToUpdate = blogsAtStart[0];
 		const updatedBlogLikes = {
 			likes: 1000,
@@ -113,7 +121,7 @@ describe('update of blog', () => {
 
 		await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlogLikes).expect(200);
 
-		const blogsAtEnd = await helper.blogsInDb();
+		const blogsAtEnd = await blogHelper.blogsInDb();
 
 		const updatedBlog = blogsAtEnd.filter((blog) => {
 			return blog.id === blogToUpdate.id;

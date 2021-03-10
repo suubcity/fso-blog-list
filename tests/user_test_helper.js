@@ -12,7 +12,7 @@ const initialUsers = [
 		password: 'pass123',
 	},
 	{
-		username: 'RaulMr',
+		username: 'TIMOTIMO',
 		name: 'Raul',
 		password: 'pass123',
 	},

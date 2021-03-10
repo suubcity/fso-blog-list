@@ -35,9 +35,11 @@ POST http://localhost:3001/api/users/
 Content-Type: application/json
 
 {
-    "username": "blogUser",
-    "name": "Mr Thomas",
-    "password": "pass1234"
+    	
+			"username": "daveDingo",
+            "name": "dave2222",
+			"password": "pass123"
+	
 }
 
 
@@ -50,4 +52,40 @@ Content-Type: application/json
     "name": "Mr Thomas",
     "password": "pass1234"
 }
+
+###POST login with correct details.
+POST http://localhost:3001/api/login/
+Content-Type: application/json
+
+{
+    	
+			"username": "daveDingo",
+			"password": "pass123"
+	
+}
+
+###POST login with incorrect password.
+POST http://localhost:3001/api/login/
+Content-Type: application/json
+
+{
+    	
+			"username": "daveDingo",
+			"password": "wrongPassword"
+	
+}
+
+
+###POST login with incorrect username.
+
+POST http://localhost:3001/api/login/
+Content-Type: application/json
+
+{
+    	
+			"username": "incorrectUsername",
+			"password": "wrongPassword"
+	
+}
+
 
