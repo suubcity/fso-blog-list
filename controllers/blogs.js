@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 blogsRouter.get('/', async (req, res) => {
 	console.log('getting');
@@ -8,21 +9,43 @@ blogsRouter.get('/', async (req, res) => {
 	res.json(blogs);
 });
 
+const getTokenFrom = (req) => {
+	const authorization = req.get('authorization');
+	if (authorization && authorization.toLowerCase().startsWith('bearer')) {
+		return authorization.substring(7);
+	}
+	return null;
+};
+
 blogsRouter.post('/', async (req, res) => {
+	const token = getTokenFrom(req);
+
+	const decodedToken = jwt.verify(token, process.env.SECRET);
+
+	if (!decodedToken || !decodedToken.id) {
+		return res.status(401).json({ error: 'token missing or invalid' });
+	}
+
+	//from this point on we know the user is verified
+
+	const user = await User.findById(decodedToken.id);
+
+	//logging user
+	console.log('######', 'VARIABLE NAME:', 'user', 'TYPEOF:', typeof user, 'VALUE:', user, '######');
+	//end of logging
+
 	const blog = new Blog(req.body);
 
-	const user = await User.findOne({ username: 'daveDingo' });
-
-	blog.user = user.id;
+	blog.user = user._id;
 
 	blog.likes = blog.likes || 0;
 
 	if (blog.title === undefined && blog.url === undefined) {
-		res.status(400).end();
+		res.status(400).json({ error: 'Blog title or url missin' });
 	} else {
+		const savedBlog = await blog.save();
 		user.blogs = user.blogs.concat(blog._id);
 		await user.save();
-		const savedBlog = await blog.save();
 		res.json(savedBlog);
 	}
 });

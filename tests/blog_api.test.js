@@ -21,6 +21,8 @@ beforeEach(async () => {
 	let promiseArray = blogObjects.map((b) => b.save());
 	//if you forget await here the tests will run before DB is populated
 	await Promise.all(promiseArray);
+
+	//sign in with a user and retrieve a token before each test don't know how to send the token in the header.
 });
 
 test('get all blogs', async () => {

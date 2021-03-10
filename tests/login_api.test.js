@@ -8,7 +8,7 @@ const api = supertest(app);
 
 beforeEach(async () => {
 	await User.deleteMany({});
-	//changed this code to use the application to initialise the database so it has password hashes
+	//changed this code to use the application to initialise the database so it has the password hashes
 	for (let user of userHelper.initialUsers) {
 		await api.post('/api/users/').send(user);
 	}
