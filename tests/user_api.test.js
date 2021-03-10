@@ -2,14 +2,14 @@ const supertest = require('supertest');
 require('express-async-errors');
 const app = require('../app.js');
 const User = require('../models/user');
-const helper = require('./user_test_helper');
+const userHelper = require('./user_test_helper');
 const mongoose = require('mongoose');
 
 const api = supertest(app);
 
 beforeEach(async () => {
 	await User.deleteMany({});
-	for (let user of helper.initialUsers) {
+	for (let user of userHelper.initialUsers) {
 		await api.post('/api/users/').send(user);
 	}
 });
@@ -21,7 +21,7 @@ test('get all users', async () => {
 		.expect('Content-Type', /application\/json/);
 
 	const response = await api.get('/api/users/');
-	expect(response.body).toHaveLength(helper.initialUsers.length);
+	expect(response.body).toHaveLength(userHelper.initialUsers.length);
 });
 
 describe('Adding a new user', () => {
@@ -38,11 +38,11 @@ describe('Adding a new user', () => {
 			.expect(200)
 			.expect('Content-Type', /application\/json/);
 
-		usersAtEnd = await helper.usersInDb();
+		usersAtEnd = await userHelper.usersInDb();
 
 		userNames = usersAtEnd.map((u) => u.name);
 		expect(userNames).toContain('Correct Name');
-		expect(usersAtEnd).toHaveLength(helper.initialUsers.length + 1);
+		expect(usersAtEnd).toHaveLength(userHelper.initialUsers.length + 1);
 	});
 
 	test('fails when password is less than 3 characters', async () => {
@@ -60,8 +60,8 @@ describe('Adding a new user', () => {
 
 		expect(result.body.error).toContain('Password must be longer than 3 characters.');
 
-		const usersAtEnd = await helper.usersInDb();
-		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
+		const usersAtEnd = await userHelper.usersInDb();
+		expect(usersAtEnd).toHaveLength(userHelper.initialUsers.length);
 	});
 
 	test('fails when username is less than 3 characters', async () => {
@@ -79,8 +79,8 @@ describe('Adding a new user', () => {
 
 		expect(result.body.error).toContain('Username must be more than 3 characters.');
 
-		const usersAtEnd = await helper.usersInDb();
-		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
+		const usersAtEnd = await userHelper.usersInDb();
+		expect(usersAtEnd).toHaveLength(userHelper.initialUsers.length);
 	});
 
 	test('fails when username is missing', async () => {
@@ -95,8 +95,8 @@ describe('Adding a new user', () => {
 			.expect(400)
 			.expect('Content-Type', /application\/json/);
 
-		const usersAtEnd = await helper.usersInDb();
-		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
+		const usersAtEnd = await userHelper.usersInDb();
+		expect(usersAtEnd).toHaveLength(userHelper.initialUsers.length);
 	});
 
 	test('fails when password is missing', async () => {
@@ -113,8 +113,8 @@ describe('Adding a new user', () => {
 
 		expect(result.body.error).toContain('Password missing.');
 
-		const usersAtEnd = await helper.usersInDb();
-		expect(usersAtEnd).toHaveLength(helper.initialUsers.length);
+		const usersAtEnd = await userHelper.usersInDb();
+		expect(usersAtEnd).toHaveLength(userHelper.initialUsers.length);
 	});
 
 	test('fails when username is not unique', async () => {

@@ -1,4 +1,4 @@
 module.exports = {
-	setupFilesAfterEnv: ['./setup.js'],
+	slowTestThreshold: 10,
 	testEnvironment: 'node',
 };

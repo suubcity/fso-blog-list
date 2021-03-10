@@ -10,17 +10,16 @@ const mongoose = require('mongoose');
 const api = supertest(app);
 
 beforeEach(async () => {
+	await User.deleteMany({});
+	for (let user of userHelper.initialUsers) {
+		await api.post('/api/users/').send(user);
+	}
+
 	await Blog.deleteMany({});
 
 	const blogObjects = blogHelper.initialBlogs.map((b) => new Blog(b));
 	let promiseArray = blogObjects.map((b) => b.save());
 	//if you forget await here the tests will run before DB is populated
-	await Promise.all(promiseArray);
-
-	await User.deleteMany({});
-	const userObjects = userHelper.initialUsers.map((u) => new User(u));
-	promiseArray = userObjects.map((u) => u.save());
-
 	await Promise.all(promiseArray);
 });
 

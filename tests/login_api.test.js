@@ -1,5 +1,5 @@
 const supertest = require('supertest');
-const helper = require('./user_test_helper');
+const userHelper = require('./user_test_helper');
 const User = require('../models/user');
 const app = require('../app');
 const mongoose = require('mongoose');
@@ -9,7 +9,7 @@ const api = supertest(app);
 beforeEach(async () => {
 	await User.deleteMany({});
 	//changed this code to use the application to initialise the database so it has password hashes
-	for (let user of helper.initialUsers) {
+	for (let user of userHelper.initialUsers) {
 		await api.post('/api/users/').send(user);
 	}
 });
