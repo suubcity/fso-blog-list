@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 blogsRouter.get('/', async (req, res) => {
 	console.log('getting');
-	const blogs = await Blog.find({}).populate('user');
+	const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
 	res.json(blogs);
 });
 
@@ -37,8 +37,20 @@ blogsRouter.post('/', async (req, res) => {
 });
 
 blogsRouter.delete('/:id', async (req, res) => {
-	await Blog.findByIdAndRemove(req.params.id);
-	res.status(204).end();
+	const decodedToken = jwt.verify(req.token, process.env.SECRET);
+
+	const blog = await Blog.findById(req.params.id);
+
+	if (blog === null) {
+		return res.status(204).end();
+	}
+
+	if (decodedToken.id.toString() === blog.user.toString()) {
+		await Blog.findByIdAndRemove(req.params.id);
+		return res.status(204).end();
+	} else {
+		return res.status(401).json({ error: 'invalid token' });
+	}
 });
 
 blogsRouter.put('/:id', async (req, res) => {
