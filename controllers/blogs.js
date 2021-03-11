@@ -9,18 +9,8 @@ blogsRouter.get('/', async (req, res) => {
 	res.json(blogs);
 });
 
-const getTokenFrom = (req) => {
-	const authorization = req.get('authorization');
-	if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-		return authorization.substring(7);
-	}
-	return null;
-};
-
 blogsRouter.post('/', async (req, res) => {
-	const token = getTokenFrom(req);
-
-	const decodedToken = jwt.verify(token, process.env.SECRET);
+	const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
 	if (!decodedToken || !decodedToken.id) {
 		return res.status(401).json({ error: 'token missing or invalid' });
@@ -29,10 +19,6 @@ blogsRouter.post('/', async (req, res) => {
 	//from this point on we know the user is verified
 
 	const user = await User.findById(decodedToken.id);
-
-	//logging user
-	console.log('######', 'VARIABLE NAME:', 'user', 'TYPEOF:', typeof user, 'VALUE:', user, '######');
-	//end of logging
 
 	const blog = new Blog(req.body);
 
