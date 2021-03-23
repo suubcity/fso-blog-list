@@ -4,8 +4,14 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 blogsRouter.get('/', async (req, res) => {
-	console.log('getting');
 	const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+	res.json(blogs);
+});
+
+//get one
+blogsRouter.get('/:id', async (req, res) => {
+	const id = req.params.id;
+	const blogs = await Blog.findById(id).populate('user', { username: 1, name: 1 });
 	res.json(blogs);
 });
 
@@ -54,11 +60,13 @@ blogsRouter.delete('/:id', async (req, res) => {
 });
 
 blogsRouter.put('/:id', async (req, res) => {
-	const likes = req.body.likes;
-	const updatedLikes = {
-		likes,
-	};
-	const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, updatedLikes, { new: true });
+	const id = req.params.id;
+
+	const blog = req.body;
+	delete blog.user;
+	//if i didn't delete blog user there was an error
+
+	const updatedBlog = await Blog.findByIdAndUpdate(id, blog, { new: true });
 
 	res.json(updatedBlog);
 });
